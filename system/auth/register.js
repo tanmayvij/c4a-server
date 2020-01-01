@@ -18,7 +18,7 @@ module.exports = function(req, res) {
         return;
     }
     var password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
-    if(req.params.level == 0)
+    if(parseInt(req.params.level) == 0)
     {
         console.log("New Driver registration")
         newEntry = {
@@ -49,7 +49,7 @@ module.exports = function(req, res) {
             .json(resp);
         });
     }
-    else if(req.params.level == 1)
+    else if(parseInt(req.params.level) == 1)
     {
         console.log("New Parent registration");    
         newEntry = {

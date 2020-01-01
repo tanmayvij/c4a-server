@@ -5,9 +5,9 @@ var nodemailer = require("nodemailer");
 var nmconfig = require("../../config.json").nodemailer;
 
 module.exports = function(req, res) {
-    var level = req.params.level;
+    var level = parseInt(req.params.level);
     var userid = req.body.userid;
-    if(!level || (level !== 0 && level !== 1) || !userid) {
+    if((level !== 0 && level !== 1) || !userid) {
         res.status(400).json({"error" : "bad request"});
     }
     else if(level == 0) {
