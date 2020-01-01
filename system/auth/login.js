@@ -1,0 +1,89 @@
+const mongoose = require("mongoose");
+const Parent = mongoose.model("Parent");
+const Driver = mongoose.model("Driver");
+const bcrypt = require("bcrypt-nodejs");
+const jwt = require("jsonwebtoken");
+const jwtkey = require("../../config.json").jwtkey;
+
+module.exports = function(req, res) {
+    var level = req.params.level;
+    var userid = req.body.userid;
+    var password = req.body.password;
+    if(!level || (level !== 0 && level !== 1) || !userid || !password) {
+        res.status(400).json({"error" : "bad request"});
+    }
+    else if(level == 0) {
+        // Driver login
+        console.log("Driver login " + userid);
+        Driver
+        .findOne({
+            userid: userid
+        })
+        .exec(function(err, user){
+            if(err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+            else if(!user) {
+                console.log("Login failed: User does not exist")
+                res.status(404).json({"error" : "User does not exist"})
+            }
+            else {
+                if(bcrypt.compareSync(password, user.password)) {
+                    var payload = {
+                        userid : userid,
+                        username : user.name,
+                        level: user.level
+                    };
+                    var token = jwt.sign(payload, jwtkey, { expiresIn : 3600*24 })
+                    res.status(200).json({
+                        'success' : true,
+                        'token' : token
+                    });
+                }
+                else
+                {
+                    console.log('Authentication failed');
+                    res.status(401).json({'error' : 'authentication failed'});
+                }
+            }
+        });
+    }
+    else if(level == 1) {
+        // Parent login
+        console.log("Parent login " + userid);
+        Parent
+        .findOne({
+            userid: userid
+        })
+        .exec(function(err, user){
+            if(err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+            else if(!user) {
+                console.log("Login failed: User does not exist")
+                res.status(404).json({"error" : "User does not exist"})
+            }
+            else {
+                if(bcrypt.compareSync(password, user.password)) {
+                    var payload = {
+                        userid : userid,
+                        username : user.name,
+                        level: user.level
+                    };
+                    var token = jwt.sign(payload, jwtkey, { expiresIn : 3600*24 })
+                    res.status(200).json({
+                        'success' : true,
+                        'token' : token
+                    });
+                }
+                else
+                {
+                    console.log('Authentication failed');
+                    res.status(401).json({'error' : 'authentication failed'});
+                }
+            }
+        });
+    }
+}

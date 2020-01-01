@@ -19,7 +19,11 @@ var parentSchema = new mongoose.Schema({
     	type : String,
     	required : true,
     	unique: true
-  	},
+	},
+	level : {
+        type : Number,
+        default : 1
+    },  
 	name : {
     	type : String,
     	required : true

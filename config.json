@@ -1,0 +1,12 @@
+{
+    "dburl" : "mongodb+srv://tanmay:mongo@cluster0-yxut3.gcp.mongodb.net/schoolcab?retryWrites=true&w=majority",
+    "jwtkey" : "g66j19f8!zx",
+    "nodemailer" : {
+        "service": "gmail",
+        "auth": {
+            "user": "",
+            "pass": ""
+        }
+    },
+    "devport" : 8080
+}

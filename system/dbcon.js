@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var dburl = "mongodb+srv://tanmay:mongo@cluster0-yxut3.gcp.mongodb.net/schoolcab?retryWrites=true&w=majority";
+var dburl = require("../config.json").dburl;
 
 mongoose.connect(dburl, { useNewUrlParser: true });
 

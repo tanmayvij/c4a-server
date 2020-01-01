@@ -1,11 +1,12 @@
-require('./modules/dbcon');
+require('./system/dbcon');
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var path = require("path");
-var modules = require('./modules');
+var system = require('./system');
+var port = require("./config.json").devport;
 
-app.set('port', process.env.PORT ? process.env.PORT : 8080);
+app.set('port', process.env.PORT ? process.env.PORT : port);
 
 app.use(function(req, res, next) {
 	console.log(req.method, req.url);
@@ -18,7 +19,7 @@ app.use(function(req, res, next) {
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '5mb' }));
 
-app.use('/api', modules);
+app.use('/api', system);
 app.use('/', express.static(path.join(__dirname, 'public')));
 
 var server = app.listen(app.get('port'), function() {
