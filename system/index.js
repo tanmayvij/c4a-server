@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const S3 = require('./aws.controller');
 
 router.route('/driver')
 .get(require('./driver.controller').showAll);
+
+router.route('/upload')
+.post(S3.multer.single('file'), S3.doUpload)
 
 router.route('/login/:level')
 .post(require('./auth/login'));

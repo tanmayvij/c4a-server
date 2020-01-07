@@ -8,5 +8,11 @@
             "pass": ""
         }
     },
-    "devport" : 8080
+    "devport" : 8080,
+	"S3" : {
+		"endpoint": "https://sfo2.digitaloceanspaces.com",
+		"keyid": "QN6MGBCYPSG6TS4S35EH",
+		"secret": "bldAJ0lGuOhI+skGzpfHL677hXiik+6wNj5ZNMu5UPY",
+		"bucket": "school-cab"
+	}
 }

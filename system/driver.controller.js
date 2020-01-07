@@ -16,7 +16,7 @@ var runGeoQuery = function(req, res) {
 		type: "Point",
 		coordinates: [lng, lat]
 	};
-	var maxDist = 5000;
+	var maxDist = 500;
 	if(req.query.maxDist)
 	{
 		maxDist = (parseInt(req.query.maxDist, 10)*1000);

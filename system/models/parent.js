@@ -20,6 +20,11 @@ var parentSchema = new mongoose.Schema({
     	required : true,
     	unique: true
 	},
+	imageUri : {
+		type : String,
+		required : true,
+		unique : true
+	},
 	level : {
         type : Number,
         default : 1

@@ -14,10 +14,46 @@ var carSchema = new mongoose.Schema({
         required : true,
         type : String
     },
-    color : {
-        type : String
-    }
-})
+	color : {
+		type : String,
+		required : true
+	},
+    rcUri : {
+		required : true,
+        type : String,
+        unique : true
+	}
+});
+
+var aadharSchema = new mongoose.Schema({
+	number : {
+		required : true,
+        type : String,
+        unique : true
+	},
+	imageUri : {
+		required : true,
+        type : String,
+        unique : true
+	}
+});
+
+var licenseSchema = new mongoose.Schema({
+	number : {
+		required : true,
+        type : String,
+        unique : true
+	},
+	expiry : {
+		required : true,
+        type : Date
+	},
+	imageUri : {
+		required : true,
+        type : String,
+        unique : true
+	}
+});
 
 var driverSchema = new mongoose.Schema({
     userid : {
@@ -25,6 +61,11 @@ var driverSchema = new mongoose.Schema({
     	required : true,
     	unique: true
     },
+	imageUri : {
+		type : String,
+		required : true,
+		unique : true
+	},
     level : {
         type : Number,
         default : 0
@@ -54,13 +95,12 @@ var driverSchema = new mongoose.Schema({
     {
         type: [carSchema]
     },
-    aadhar :
-    {
-        type : String,
+    aadhar : {
+        type : aadharSchema,
         required : true
     },
     license : {
-        type : String,
+        type : licenseSchema,
         required : true
     }
 });

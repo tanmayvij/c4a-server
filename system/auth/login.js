@@ -10,19 +10,22 @@ module.exports = function(req, res) {
     var userid = req.body.userid;
     var password = req.body.password;
     if((level !== 0 && level !== 1) || !userid || !password) {
-        res.status(400).json({"error" : "bad request"});
+        res.status(400).json({"error" : "Invalid request. Seems like some details are missing!"});
     }
     else if(level == 0) {
         // Driver login
         console.log("Driver login " + userid);
         Driver
         .findOne({
-            userid: userid
+            $or: [
+				{userid: userid},
+				{email: userid}
+			]
         })
         .exec(function(err, user){
             if(err) {
                 console.log(err);
-                res.status(500).json(err);
+                res.status(500).json({"error": "Uh-oh! Something's wrong with our servers :( We'll be up and running soon!"});
             }
             else if(!user) {
                 console.log("Login failed: User does not exist")
@@ -44,7 +47,7 @@ module.exports = function(req, res) {
                 else
                 {
                     console.log('Authentication failed');
-                    res.status(401).json({'error' : 'authentication failed'});
+                    res.status(401).json({'error' : 'Authentication failed: Invalid Password'});
                 }
             }
         });
@@ -54,12 +57,15 @@ module.exports = function(req, res) {
         console.log("Parent login " + userid);
         Parent
         .findOne({
-            userid: userid
+            $or: [
+				{userid: userid},
+				{email: userid}
+			]
         })
         .exec(function(err, user){
             if(err) {
                 console.log(err);
-                res.status(500).json(err);
+                res.status(500).json({"error": "Uh-oh! Something's wrong with our servers :( We'll be up and running soon!"});
             }
             else if(!user) {
                 console.log("Login failed: User does not exist")
@@ -81,7 +87,7 @@ module.exports = function(req, res) {
                 else
                 {
                     console.log('Authentication failed');
-                    res.status(401).json({'error' : 'authentication failed'});
+                    res.status(401).json({'error' : 'Authentication failed'});
                 }
             }
         });

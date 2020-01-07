@@ -10,7 +10,7 @@ module.exports = function(req, res) {
     {
         resp = {
             'statusCode': 400,
-            'returnData': "Password is required"
+            'error': "Password is required"
         };
         res
         .status(400)
@@ -57,7 +57,8 @@ module.exports = function(req, res) {
             'name' : req.body.name,
             'email' : req.body.email,
             'phone' : req.body.phone,
-            'password' : password
+            'password' : password,
+            'imageUri': req.body.imageUri
         };
         Parent.create(newEntry, function(err, resp){
             if(err) {
