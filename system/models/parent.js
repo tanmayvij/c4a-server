@@ -1,16 +1,22 @@
 var mongoose = require('mongoose');
 
 var childSchema = new mongoose.Schema({
+	id : {
+		type : String,
+        required : true,
+		unique: true
+	},
     name : {
         type : String,
         required : true
     },
-    grade : {
-        type : String
-    },
-    school : {
-        type : String,
-        required : true
+    institution : {
+		name : String,
+		// longitude (E/W), latitude (N/S) order.
+		coordinates : {
+		  type : [Number],
+		  index : '2dsphere'
+		}
     }
 });
 

@@ -1,6 +1,11 @@
 var mongoose = require('mongoose');
 
 var carSchema = new mongoose.Schema({
+	id : {
+		type : String,
+        required : true,
+		unique: true
+	},
     regno : {
         required : true,
         type : String,

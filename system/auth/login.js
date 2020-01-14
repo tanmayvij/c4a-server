@@ -34,7 +34,7 @@ module.exports = function(req, res) {
             else {
                 if(bcrypt.compareSync(password, user.password)) {
                     var payload = {
-                        userid : userid,
+                        userid : user.userid,
                         username : user.name,
                         level: user.level
                     };
@@ -74,7 +74,7 @@ module.exports = function(req, res) {
             else {
                 if(bcrypt.compareSync(password, user.password)) {
                     var payload = {
-                        userid : userid,
+                        userid : user.userid,
                         username : user.name,
                         level: user.level
                     };

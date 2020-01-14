@@ -27,6 +27,7 @@ module.exports = function(req, res) {
             'email' : req.body.email,
             'phone' : req.body.phone,
             'password' : password,
+            'imageUri': req.body.imageUri,
             'aadhar': req.body.aadhar,
             'license': req.body.license
         };
@@ -70,13 +71,9 @@ module.exports = function(req, res) {
                 statusCode = 201;
                 returnData = resp;
             }
-            resp = {
-                'statusCode': statusCode,
-                'returnData': returnData
-            };
             res
             .status(statusCode)
-            .json(resp);
+            .json(returnData);
         });
     }
     else

@@ -92,3 +92,83 @@ module.exports.showAll = function(req,res) {
 		});
 	
 };
+
+module.exports.getCar = function(req,res) {
+
+    if(req.level !== 0)
+	{
+		res.status(401).json({"error": "You are not authorized to view this page."});
+	}
+	else
+	{
+		Driver
+		.findOne({userid: req.userid})
+		.select('car -_id')
+		.exec(function(err, data) {
+			if(err)	{
+				console.log(err);
+				res.status(500).json({"error": "Internal Server Error. Please try again later"});
+			}
+			else {
+				console.log("GET Car data");
+				res.status(200)
+				.json(data.car);
+			}
+		});
+	}
+	
+};
+
+module.exports.addCar = function(req, res) {
+	
+	if(req.level !== 0)
+	{
+		res.status(401).json({"error": "You are not authorized to view this page."});
+	}
+	else
+	{
+		Driver
+		.findOne({userid: req.userid})
+		.exec(function(err, data) {
+			if(err)	{
+				console.log(err);
+				res.status(500).json({"error": "Internal Server Error. Please try again later"});
+			}
+			else {
+				console.log("ADD new car");
+				req.body.id = mongoose.Types.ObjectId();
+				req.body._id = req.body.id;
+				data.car.push(req.body);
+				data.save();
+				
+				res.status(201).json({success: true});
+			}
+		});
+	}
+};
+
+module.exports.getOne = function(req,res,next) {
+
+    if(req.level !== 0)
+	{
+		res.status(401).json({"error": "You are not authorized to view this page."});
+	}
+	else
+	{
+		Driver
+		.findOne({userid: req.userid})
+		.exec(function(err, data) {
+			if(err)	{
+				console.log(err);
+				res.status(500).json({"error": "Internal Server Error. Please try again later"});
+			}
+			else {
+				console.log("GET Driver's data");
+				req.filepath = `driver/${data.imageUri.split('/').pop()}`;
+				req.data = data;
+				next();
+			}
+		});
+	}
+	
+};
