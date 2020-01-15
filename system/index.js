@@ -40,7 +40,7 @@ router.route('/forgot/:level')
 .post(require('./auth/forgot'));
 
 router.route('/resetpass/:level')
-.get(require('./auth/resetpass'));
+.post(require('./auth/resetpass'));
 
 router.route('/update/:level/:userId')
 .put(require('./auth/update'));

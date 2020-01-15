@@ -17,6 +17,17 @@ module.exports = function(req, res) {
         .json(resp);
         return;
     }
+	if(req.body.userid.includes('@'))
+    {
+        resp = {
+            'statusCode': 400,
+            'error': "User ID cannot include special characters."
+        };
+        res
+        .status(400)
+        .json(resp);
+        return;
+    }
     var password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
     if(parseInt(req.params.level) == 0)
     {

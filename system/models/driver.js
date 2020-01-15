@@ -107,7 +107,10 @@ var driverSchema = new mongoose.Schema({
     license : {
         type : licenseSchema,
         required : true
-    }
+    },
+	token : {
+    	type : String
+  	}
 });
 
 mongoose.model("Driver", driverSchema, "drivers");

@@ -59,7 +59,10 @@ var parentSchema = new mongoose.Schema({
     },
     child : {
         type : [childSchema]
-    }  
+    },
+	token : {
+    	type : String
+  	}
 });
 
 mongoose.model("Parent", parentSchema, "parents");

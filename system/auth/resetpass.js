@@ -7,20 +7,24 @@ const jwtkey = require("../../config.json").jwtkey;
 
 module.exports = function(req, res) {
     var level = parseInt(req.params.level);
-    var userid = req.query.userid;
-    var token = req.query.token;
+    var userid = req.body.userid;
+    var token = req.body.token;
+	var newPassword = req.body.password;
     if((level !== 0 && level !== 1) || !userid || !token) {
         res.status(400).json({"error" : "bad request"});
     }
     else if(level == 0) {
         Driver
         .findOne({
-			userid : userid
+			$or: [
+				{userid: userid},
+				{email: userid}
+			]
 		})
 		.exec(function(err, data) {
 			if(err)	{
 					console.log("Error getting user");
-					res.status(500).json(err);
+					res.status(500).json({"error": "Uh-oh! Something's not right. Please try again later."});
 			}
 			else {
 				if(!data)
@@ -35,15 +39,8 @@ module.exports = function(req, res) {
 					// Verify token
 					if(token == data.token)
 					{
-						// Generate new password					
-						var temp = "";
-						var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-						for (var i = 0; i < 10; i++)
-						{
-							temp += possible.charAt(Math.floor(Math.random() * possible.length));
-						}	
 						
-						var password = bcrypt.hashSync(temp, bcrypt.genSaltSync(10));
+						var password = bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10));
 						
 						// Update password & remove token in database
 						data.password = password;
@@ -51,10 +48,10 @@ module.exports = function(req, res) {
 						data.save(function(err, result){
 							if(err)
 							{
-								res.status(500).json(err);
+								res.status(500).json({"error": "Uh-oh! Something's not right. Please try again later."});
 							}
 							else {
-								res.status(200).json({ 'newPassword' : temp });
+								res.status(200).json({ 'success': true });
 							}
 						});
 					}
@@ -62,7 +59,7 @@ module.exports = function(req, res) {
 					{
 						res
 						.status(401)
-						.json({"error" : "invalid token"});
+						.json({"error" : "Invalid code. Please try again."});
 					}
 				}
 			}
@@ -71,12 +68,15 @@ module.exports = function(req, res) {
     else if(level == 1) {
         Parent
         .findOne({
-			userid : userid
+			$or: [
+				{userid: userid},
+				{email: userid}
+			]
 		})
 		.exec(function(err, data) {
 			if(err)	{
 					console.log("Error getting user");
-					res.status(500).json(err);
+					res.status(500).json({"error": "Uh-oh! Something's not right. Please try again later."});
 			}
 			else {
 				if(!data)
@@ -91,15 +91,8 @@ module.exports = function(req, res) {
 					// Verify token
 					if(token == data.token)
 					{
-						// Generate new password					
-						var temp = "";
-						var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-						for (var i = 0; i < 10; i++)
-						{
-							temp += possible.charAt(Math.floor(Math.random() * possible.length));
-						}	
 						
-						var password = bcrypt.hashSync(temp, bcrypt.genSaltSync(10));
+						var password = bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10));
 						
 						// Update password & remove token in database
 						data.password = password;
@@ -107,10 +100,10 @@ module.exports = function(req, res) {
 						data.save(function(err, result){
 							if(err)
 							{
-								res.status(500).json(err);
+								res.status(500).json({"error": "Uh-oh! Something's not right. Please try again later."});
 							}
 							else {
-								res.status(200).json({ 'newPassword' : temp });
+								res.status(200).json({ 'success': true});
 							}
 						});
 					}
@@ -118,7 +111,7 @@ module.exports = function(req, res) {
 					{
 						res
 						.status(401)
-						.json({"error" : "invalid token"});
+						.json({"error" : "Invalid code. Please try again."});
 					}
 				}
 			}

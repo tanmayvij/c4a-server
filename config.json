@@ -14,5 +14,7 @@
 		"keyid": "QN6MGBCYPSG6TS4S35EH",
 		"secret": "bldAJ0lGuOhI+skGzpfHL677hXiik+6wNj5ZNMu5UPY",
 		"bucket": "school-cab"
-	}
+	},
+	"msgApiUrl": "https://api.textlocal.in/send",
+	"msgApiKey": "QRutnq60+HY-hqMTKCUoGCqWNAaetcyiGWF3KO6U3d"
 }

@@ -3,6 +3,7 @@ var Parent = mongoose.model('Parent');
 var Driver = mongoose.model("Driver");
 var nodemailer = require("nodemailer");
 var nmconfig = require("../../config.json").nodemailer;
+const fetch = require('node-fetch');
 
 module.exports = function(req, res) {
     var level = parseInt(req.params.level);
@@ -14,7 +15,10 @@ module.exports = function(req, res) {
         console.log("Forgot password request for driver " + userid);
         Driver
         .findOne({
-            userid: userid
+            $or: [
+				{userid: userid},
+				{email: userid}
+			]
         })
         .exec(function(err, user){
             if(err) {
@@ -47,31 +51,31 @@ module.exports = function(req, res) {
 					res.status(statusCode).json(returnData);
 					return;
 				}
-				// Send email
+				// Send message
 				
-				var transporter = nodemailer.createTransport(nmconfig);
-				
-				var mailOptions = {
-					from: 'no-reply@example.com',
-					to: user.email,
-					subject: 'Password reset request',
-					text: 'You have requested to reset your password. Please enter the following token on the reset page: ' + token
-				};
-				
-				transporter.sendMail(mailOptions, function(error, info){
-					if (error) {
-						console.log(error);
-						statusCode = 500;
-						returnData = error;
-						res.status(statusCode).json(returnData);
-					}
-					else {
-						console.log('Email sent: ' + info.response);
-						statusCode = 200;
-						returnData = { "success" : "reset link sent" };
-						res.status(statusCode).json(returnData);
-					}
-				});
+				fetch(`${require('../../config.json').msgApiUrl}?test=1&
+                    apikey=${require('../../config.json').msgApiKey}
+                    &message=Your verification code to reset your Cab4All password is ${token}.
+                    &numbers=${user.phone.substring(1)}`,
+                    {method: 'GET'})
+                    .then((response) => response.json())
+                    .then((response) => {
+                        if(response.status == 'success')
+                        {   
+                            console.log('Message sent');
+							statusCode = 200;
+							returnData = { "success" : true };
+							res.status(statusCode).json(returnData);
+                        }
+                        else
+                        {
+                            console.log({"error": JSON.stringify(response)});
+							statusCode = 500;
+							returnData = { "error" : "Uh-oh! Something went wrong while sending the verification code SMS to your mobile number. Please try again later." };
+							res.status(statusCode).json(returnData);
+                        } 
+                    }
+                );
 			}
         });
     }
@@ -79,7 +83,10 @@ module.exports = function(req, res) {
         console.log("Forgot password request for parent " + userid);
         Parent
         .findOne({
-            userid: userid
+            $or: [
+				{userid: userid},
+				{email: userid}
+			]
         })
         .exec(function(err, user){
             if(err) {
@@ -95,7 +102,7 @@ module.exports = function(req, res) {
 				// Generate token
 				var token = "";
 				var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-				for (var i = 0; i < 32; i++)
+				for (var i = 0; i < 6; i++)
 				{
 					token += possible.charAt(Math.floor(Math.random() * possible.length));
 				}
@@ -104,39 +111,40 @@ module.exports = function(req, res) {
 				user.save(function(err, result){
 					if(err)
 					{
+						console.log(err);
 						statusCode = 500;
-						returnData = err;
+						returnData = { "error" : "Uh-oh! Something went wrong while sending the verification code SMS to your mobile number. Please try again later." };
 					}
 				});
 				if(statusCode == 500) {
 					res.status(statusCode).json(returnData);
 					return;
 				}
-				// Send email
+				// Send message
 				
-				var transporter = nodemailer.createTransport(nmconfig);
-				
-				var mailOptions = {
-					from: 'no-reply@example.com',
-					to: user.email,
-					subject: 'Password reset request',
-					text: 'You have requested to reset your password. Please enter the following token on the reset page: ' + token
-				};
-				
-				transporter.sendMail(mailOptions, function(error, info){
-					if (error) {
-						console.log(error);
-						statusCode = 500;
-						returnData = error;
-						res.status(statusCode).json(returnData);
-					}
-					else {
-						console.log('Email sent: ' + info.response);
-						statusCode = 200;
-						returnData = { "success" : "reset link sent" };
-						res.status(statusCode).json(returnData);
-					}
-				});
+				fetch(`${require('../../config.json').msgApiUrl}?test=1&
+                    apikey=${require('../../config.json').msgApiKey}
+                    &message=Your verification code to reset your Cab4All password is ${token}.
+                    &numbers=${user.phone.substring(1)}`,
+                    {method: 'GET'})
+                    .then((response) => response.json())
+                    .then((response) => {
+                        if(response.status == 'success')
+                        {   
+                            console.log('Message sent');
+							statusCode = 200;
+							returnData = { "success" : true };
+							res.status(statusCode).json(returnData);
+                        }
+                        else
+                        {
+                            console.log({"error": JSON.stringify(response)});
+							statusCode = 500;
+							returnData = { "error" : "Uh-oh! Something went wrong while sending the verification code SMS to your mobile number. Please try again later." };
+							res.status(statusCode).json(returnData);
+                        } 
+                    }
+                );
 			}
         });
     }
