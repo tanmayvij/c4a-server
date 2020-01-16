@@ -34,7 +34,7 @@ module.exports = function(req, res) {
 				// Generate token
 				var token = "";
 				var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-				for (var i = 0; i < 32; i++)
+				for (var i = 0; i < 6; i++)
 				{
 					token += possible.charAt(Math.floor(Math.random() * possible.length));
 				}
@@ -43,6 +43,7 @@ module.exports = function(req, res) {
 				user.save(function(err, result){
 					if(err)
 					{
+						console.log(err);
 						statusCode = 500;
 						returnData = err;
 					}
@@ -53,10 +54,7 @@ module.exports = function(req, res) {
 				}
 				// Send message
 				
-				fetch(`${require('../../config.json').msgApiUrl}?test=1&
-                    apikey=${require('../../config.json').msgApiKey}
-                    &message=Your verification code to reset your Cab4All password is ${token}.
-                    &numbers=${user.phone.substring(1)}`,
+				fetch(`${require('../../config.json').msgApiUrl}?apikey=${require('../../config.json').msgApiKey}&message=Your verification code to reset your Cab4All password is ${token}.&numbers=${user.phone.substring(1)}`,
                     {method: 'GET'})
                     .then((response) => response.json())
                     .then((response) => {
@@ -122,10 +120,7 @@ module.exports = function(req, res) {
 				}
 				// Send message
 				
-				fetch(`${require('../../config.json').msgApiUrl}?test=1&
-                    apikey=${require('../../config.json').msgApiKey}
-                    &message=Your verification code to reset your Cab4All password is ${token}.
-                    &numbers=${user.phone.substring(1)}`,
+				fetch(`${require('../../config.json').msgApiUrl}?apikey=${require('../../config.json').msgApiKey}&message=Your verification code to reset your Cab4All password is ${token}.&numbers=${user.phone.substring(1)}`,
                     {method: 'GET'})
                     .then((response) => response.json())
                     .then((response) => {
