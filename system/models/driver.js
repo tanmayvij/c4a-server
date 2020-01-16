@@ -3,13 +3,11 @@ var mongoose = require('mongoose');
 var carSchema = new mongoose.Schema({
 	id : {
 		type : String,
-        required : true,
-		unique: true
+        required : true
 	},
     regno : {
         required : true,
-        type : String,
-        unique : true
+        type : String
     },
     make : {
         required : true,
@@ -25,8 +23,7 @@ var carSchema = new mongoose.Schema({
 	},
     rcUri : {
 		required : true,
-        type : String,
-        unique : true
+        type : String
 	}
 });
 

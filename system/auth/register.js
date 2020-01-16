@@ -44,7 +44,7 @@ module.exports = function(req, res) {
         };
         Driver.create(newEntry, function(err, resp){
             if(err) {
-                console.log("Error registering parent record : " + err)
+                console.log("Error registering driver record : " + err)
                 statusCode = 400;
                 returnData = err;
             }
