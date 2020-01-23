@@ -38,7 +38,7 @@ module.exports = function(req, res) {
                         username : user.name,
                         level: user.level
                     };
-                    var token = jwt.sign(payload, jwtkey, { expiresIn : 3600*24 })
+                    var token = jwt.sign(payload, jwtkey)
                     res.status(200).json({
                         'success' : true,
                         'token' : token
@@ -78,7 +78,7 @@ module.exports = function(req, res) {
                         username : user.name,
                         level: user.level
                     };
-                    var token = jwt.sign(payload, jwtkey, { expiresIn : 3600*24 })
+                    var token = jwt.sign(payload, jwtkey)
                     res.status(200).json({
                         'success' : true,
                         'token' : token

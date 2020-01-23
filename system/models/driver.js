@@ -1,5 +1,13 @@
 var mongoose = require('mongoose');
 
+var waypointSchema = new mongoose.Schema({
+	child: String,
+	coordinates: {
+		  type : [Number],
+		  index : '2dsphere'
+		}
+});
+
 var carSchema = new mongoose.Schema({
 	id : {
 		type : String,
@@ -24,6 +32,9 @@ var carSchema = new mongoose.Schema({
     rcUri : {
 		required : true,
         type : String
+	},
+	route: {
+		type: [waypointSchema]
 	}
 });
 

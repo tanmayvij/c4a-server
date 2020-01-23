@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var dburl = require("../config.json").dburl;
 
-mongoose.connect(dburl, { useNewUrlParser: true });
+mongoose.connect(dburl, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // CONNECTION EVENTS
 mongoose.connection.on('connected', function() {
@@ -42,3 +42,5 @@ mongoose.connection.on('connected', function() {
 
   require('./models/driver');
   require('./models/parent');
+  require('./models/request');
+  require('./models/query');
