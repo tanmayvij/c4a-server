@@ -4,98 +4,6 @@ var Request = mongoose.model("Request");
 var Query = mongoose.model("Query");
 const fetch = require('node-fetch');
 
-var runGeoQuery = function(req, res) {
-	
-	if (isNaN(req.query.lng) || isNaN(req.query.lat)) {
-		res
-		.status(400).
-		json({"error": "Error 400: lat and lng should have floating point values."});
-		return;
-	}
-	var lng = parseFloat(req.query.lng);
-	var lat = parseFloat(req.query.lat);
-	
-	var point = {
-		type: "Point",
-		coordinates: [lng, lat]
-	};
-	var maxDist = 500;
-	if(req.query.maxDist)
-	{
-		maxDist = (parseInt(req.query.maxDist, 10)*1000);
-	}
-	Driver
-		.aggregate([
-			{
-				$geoNear: {
-					near: point,
-					spherical: true,
-					maxDistance: maxDist,
-					num: 5,
-					distanceField: "dist.calculated"
-				}
-			}
-		]).then( function(results) {
-			if(results.length == 0 || !results)
-			{
-				res
-					.status(404)
-					.json({
-					"error": "No drivers found"
-				});
-			}
-			else {
-				console.log('Geo Results', results);
-				res
-					.status(200)
-					.json(results);
-			}
-		
-        });
-    };
-module.exports.showAll = function(req,res) {
-
-    var offset = 0;
-	var count = 5;
-	
-	if(req.query && req.query.lat && req.query.lng)
-	{
-		runGeoQuery(req, res);
-		return;
-	}
-	
-	if(req.query && req.query.offset)
-	{
-		offset = parseInt(req.query.offset, 10);
-	}
-	if(req.query && req.query.count)
-	{
-		count = parseInt(req.query.count, 10);
-	}
-	
-	if(isNaN(offset) || isNaN(count)) {
-		res.status(400).json({"error" : "Error 400: count and offset should have integer values."});
-		return;
-	}
-    
-    Driver
-	.find()
-	.skip(offset)
-	.limit(count)
-		.exec(function(err, data) {
-			if(err)	{
-				console.log("Error finding drivers");
-				res.status(500).json(err);
-			}
-			else {
-				console.log("GET", count, "Drivers' data");
-				res.status(200)
-				.json(data);
-			}
-		});
-	
-};
-
 module.exports.getCar = function(req,res) {
 
     if(req.level !== 0)
@@ -201,7 +109,7 @@ module.exports.getRequests = function(req,res) {
 };
 
 module.exports.getQueries = function(req,res) {
-
+/*
 		Query
 		.aggregate([
 			{
@@ -219,7 +127,7 @@ module.exports.getQueries = function(req,res) {
 				console.log("GET Driver Requests' data");
 				res.status(200).json(data);
 			}
-		});
+		});*/
 	
 };
 
@@ -276,7 +184,7 @@ module.exports.acceptRequest = function(req,res,next) {
 			var message = `
 			Dear ${data.parent.name}, Your Cab4All request for ${data.childName} has been accepted by ${data.driver.name}. You can now contact the driver on ${data.driver.phone}. Thank you for using Cab4All.`;
 			var params = {
-					apikey: require('../../config.json').msgApiKey,
+					apikey: require('../config.json').msgApiKey,
 					message: message,
 					numbers: data.parent.phone.substring(1)
 				}
@@ -315,7 +223,10 @@ module.exports.updateRoute = function(req, res, next) {
 		else {
 			result.car.forEach(element => {
 				if(element._id == req.carId) {
+					var endpoint = element.route.pop();
 					element.route.push(req.route);
+					element.route.push(endpoint);
+					element.route = optimizeRoute(element.route);
 				}
 			});
 			result.save();
@@ -347,7 +258,86 @@ module.exports.deleteRequest = function(req,res) {
 
 module.exports.contactOnQuery = function(req,res) {
 
-	/* Send message to parent and log the event in db */
+	
+	if(!req.params.id)
+	{
+		res.status(400).json({"error": "Params missing"});
+		return;
+	}
+	Query
+	.aggregate([
+		{
+			$match: {
+				_id: mongoose.Types.ObjectId( req.params.id)
+			}
+		},
+		{
+			$lookup: {
+				from: 'parents',
+				localField: 'parentUserId',
+				foreignField: "userid",
+				as: "parent"
+			}
+		},
+		{
+			$lookup: {
+				from: 'drivers',
+				
+				pipeline: [
+					{
+						$match: {
+							userid: req.userid
+						}
+					}
+				],
+				
+				as: "driver"
+			}
+		}
+	])
+	.exec(function(err, response) {
+		if(err) {
+			res.status(500).json({"error": "Something went wrong."});
+		}
+		else if(response.length == 0) {
+			res.status(404).json({"error": "Query not found."});
+		}
+		else {
+			var data = response[0];
+			data.parent = response[0].parent[0];
+			data.driver = response[0].driver[0];
+			
+			var message = `Dear ${data.parent.name}, ${data.driver.name} has expressed interest for your Cab4All query for ${data.childName}. You can now contact the driver on ${data.driver.phone}. Thank you for using Cab4All.`;
+			var params = {
+					apikey: require('../config.json').msgApiKey,
+					message: message,
+					numbers: data.parent.phone.substring(1)
+				}
+				var esc = encodeURIComponent;
+				var query = Object.keys(params)
+					.map(k => esc(k) + '=' + esc(params[k]))
+					.join('&');
+			fetch(require('../config.json').msgApiUrl + '?' + query,
+                    {method: 'GET'})
+                    .then((response) => response.json())
+                    .then((response) => {
+                        if(response.status == 'success')
+                        {   
+                            statusCode = 200;
+							returnData = {"success": true};
+							res.status(statusCode).json(returnData);
+                        }
+                        else
+                        {
+                            console.log({"error": JSON.stringify(response)});
+							statusCode = 500;
+							returnData = { "error" : response };
+							res.status(statusCode).json(returnData);
+                        } 
+                    }
+                );
+		}
+	})
 	
 };
 
@@ -359,8 +349,9 @@ module.exports.searchCabs = function(req, res) {
 			name: "ABC XYZ",
 			distance: 100,
 			noOfChildren: 10,
-			timings: "ABC",
+			startTime: "ABC",
 			car: {
+				_id: "meowmeowww",
 				make: "Hyundai",
 				model: "i20",
 				color: "Black",
@@ -381,10 +372,81 @@ module.exports.searchCabs = function(req, res) {
 	);
 };
 
-module.exports.saveRequest = function(req, res) {
-	res.json({success: true})
-}
 
-module.exports.saveQuery = function(req, res) {
-	res.json({success: true})
+module.exports.configureRoute = function(req, res) {
+	
+	Driver
+	.findOne({userid: req.userid})
+	.exec(function(err, driver) {
+		if(err) {
+			res.status(500).json({"error": JSON.stringify(err)});
+		}
+		else {
+			driver.car.forEach(element => {
+				if(element._id == req.body.carId) {
+					optimizeRoute(req.body.route, function(newRoute) {
+						element.route = newRoute;
+						element.startTime = req.body.startTime;
+						driver.save(function(err, result) {
+							if(err) {
+								res.status(500).json({"error": JSON.stringify(err)});
+							}
+							else {
+								res.status(201).json({"success": true});
+							}
+						});
+					});
+					
+				}
+			});
+		}
+	});
+	
+};
+
+function optimizeRoute(route, callback) {
+	
+	var waypoints = 'optimize:true|';
+	
+	var temp = route;
+	var start = temp.shift();
+	var end = temp.pop();
+	
+	temp.forEach(element => {
+		waypoints += `${element.coordinates[1]},${element.coordinates[0]}|`
+	});
+	
+	var params = {
+				waypoints: waypoints,
+				origin: start.coordinates[1] + ',' + start.coordinates[0],
+				destination: end.coordinates[1] + ',' + end.coordinates[0],
+				key: require('../config.json').mapsApiKey
+			}
+			var esc = encodeURIComponent;
+			var query = Object.keys(params)
+				.map(k => esc(k) + '=' + esc(params[k]))
+				.join('&');
+
+	fetch(`https://maps.googleapis.com/maps/api/directions/json?${query}`)
+	.then((response) => response.json())
+	.then((response) => {
+		
+		var newRoute = [];
+		
+		newRoute.push(start);
+		
+		if(response.routes.length !== 0) {
+			response.routes[0].waypoint_order.forEach(i => {
+				newRoute.push(temp[i]);
+			});
+		}
+		else {
+			temp.forEach(element => {
+				newRoute.push(element);
+			})
+		}
+		
+		newRoute.push(end);
+		callback(newRoute);
+	});
 }

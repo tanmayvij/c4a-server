@@ -52,13 +52,9 @@ module.exports = function(req, res) {
                 statusCode = 201;
                 returnData = resp;
             }
-            resp = {
-                'statusCode': statusCode,
-                'returnData': returnData
-            };
             res
             .status(statusCode)
-            .json(resp);
+            .json(returnData);
         });
     }
     else if(parseInt(req.params.level) == 1)

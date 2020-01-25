@@ -4,9 +4,6 @@ const S3 = require('./aws.controller');
 const parent = require('./parent.controller');
 const driver = require('./driver.controller');
 
-router.route('/driver')
-.get(driver.showAll);
-
 router.route('/getCar')
 .get(require('./auth/authenticate'), driver.getCar);
 
@@ -34,11 +31,9 @@ router.route('/addCar')
 router.route('/searchCabs')
 .get(driver.searchCabs);
 
-router.route('/saveRequest')
-.post(driver.saveRequest);
+router.route('/configureRoute')
+.put(require('./auth/authenticate'), driver.configureRoute);
 
-router.route('/saveQuery')
-.post(driver.saveQuery);
 
 /*************************/
 
@@ -50,6 +45,13 @@ router.route('/getParent')
 
 router.route('/addChild')
 .post(require('./auth/authenticate'), parent.addChild);
+
+
+router.route('/saveRequest')
+.post(require('./auth/authenticate'), parent.saveRequest);
+
+router.route('/saveQuery')
+.post(require('./auth/authenticate'), parent.saveQuery);
 
 /*************************/
 

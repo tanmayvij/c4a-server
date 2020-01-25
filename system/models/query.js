@@ -26,10 +26,6 @@ var QuerySchema = new mongoose.Schema({
             type: [Number],
             index: '2dsphere'
         }
-    },
-    carId: {
-        type: String,
-        required: true
     }
 });
 

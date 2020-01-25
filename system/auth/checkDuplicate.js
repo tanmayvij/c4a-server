@@ -9,7 +9,7 @@ module.exports = function(req, res) {
 
     if(level == 0)
     {
-        Driver.findOne(JSON.parse(`{${type}: ${value}}`))
+        Driver.findOne(JSON.parse(`{"${type}": "${value}"}`))
         .exec(function(err, result) {
             if(err) res.status(500).json({"error": "Server Error"});
             else if(!result) res.status(200).json({"status": true});

@@ -13,8 +13,9 @@
 		"endpoint": "https://sfo2.digitaloceanspaces.com",
 		"keyid": "QN6MGBCYPSG6TS4S35EH",
 		"secret": "bldAJ0lGuOhI+skGzpfHL677hXiik+6wNj5ZNMu5UPY",
-		"bucket": "school-cab"
+		"bucket": "test-bucket-c4a"
 	},
 	"msgApiUrl": "https://api.textlocal.in/send",
-	"msgApiKey": "QRutnq60+HY-hqMTKCUoGCqWNAaetcyiGWF3KO6U3d"
+	"msgApiKey": "QRutnq60+HY-hqMTKCUoGCqWNAaetcyiGWF3KO6U3d",
+	"mapsApiKey": "AIzaSyA-kAt-9e3bKj2ngyegrQEQOOrkIvH4qDk"
 }

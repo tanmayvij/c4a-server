@@ -10,31 +10,29 @@ var waypointSchema = new mongoose.Schema({
 
 var carSchema = new mongoose.Schema({
 	id : {
-		type : String,
-        required : true
+		type : String
 	},
     regno : {
-        required : true,
-        type : String
+        type : String,
+		default: null
     },
     make : {
-        required : true,
         type : String
     },
     model : {
-        required : true,
         type : String
     },
 	color : {
-		type : String,
-		required : true
+		type : String
 	},
     rcUri : {
-		required : true,
         type : String
 	},
 	route: {
 		type: [waypointSchema]
+	},
+	startTime: {
+		type: String
 	}
 });
 
