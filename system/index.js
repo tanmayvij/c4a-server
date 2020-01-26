@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const S3 = require('./aws.controller');
 const parent = require('./parent.controller');
-const driver = require('./driver.controller');
+const driver = require('./driver');
 
 router.route('/getCar')
 .get(require('./auth/authenticate'), driver.getCar);
