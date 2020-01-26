@@ -55,7 +55,7 @@ module.exports = function(req,res) {
 			
 			var message = `Dear ${data.parent.name}, ${data.driver.name} has expressed interest for your Cab4All query for ${data.childName}. You can now contact the driver on ${data.driver.phone}. Thank you for using Cab4All.`;
 			var params = {
-					apikey: require('../config.json').msgApiKey,
+					apikey: require('../../config.json').msgApiKey,
 					message: message,
 					numbers: data.parent.phone.substring(1)
 				}
@@ -63,7 +63,7 @@ module.exports = function(req,res) {
 				var query = Object.keys(params)
 					.map(k => esc(k) + '=' + esc(params[k]))
 					.join('&');
-			fetch(require('../config.json').msgApiUrl + '?' + query,
+			fetch(require('../../config.json').msgApiUrl + '?' + query,
                     {method: 'GET'})
                     .then((response) => response.json())
                     .then((response) => {

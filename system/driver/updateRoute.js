@@ -43,7 +43,7 @@ function optimizeRoute(route, callback) {
 				waypoints: waypoints,
 				origin: start.coordinates[1] + ',' + start.coordinates[0],
 				destination: end.coordinates[1] + ',' + end.coordinates[0],
-				key: require('../config.json').mapsApiKey
+				key: require('../../config.json').mapsApiKey
 			}
 			var esc = encodeURIComponent;
 			var query = Object.keys(params)

@@ -4,6 +4,6 @@ module.exports = {
     getChild: require('./getChild'),
     getOne: require('./getOne'),
     saveQuery: require('./saveQuery'),
-    saveRequests: require('./saveRequests')
+    saveRequest: require('./saveRequest')
     
 };

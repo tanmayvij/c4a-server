@@ -19,8 +19,13 @@ module.exports = function(req,res) {
 			}
 			else {
 				console.log("GET Car data");
-				res.status(200)
-				.json(data.car);
+				if(data.car) {
+					res.status(200)
+					.json(data.car);
+				}
+				else {
+					res.status(404).json([])
+				}
 			}
 		});
 	}
