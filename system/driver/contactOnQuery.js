@@ -78,7 +78,7 @@ module.exports = function(req,res) {
                         {
                             console.log({"error": JSON.stringify(response)});
 							statusCode = 500;
-							returnData = { "error" : response };
+							returnData = { "error" : "Something went wrong. Please try again later." };
 							res.status(statusCode).json(returnData);
                         } 
                     }
