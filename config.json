@@ -1,5 +1,5 @@
 {
-    "dburl" : "mongodb+srv://tanmay:mongo@cluster0-bjv6l.mongodb.net/schoolcab?retryWrites=true&w=majority",
+    "dburl" : "mongodb://tanmay:mongo@localhost/cab4all",
     "jwtkey" : "g66j19f8!zx",
     "nodemailer" : {
         "service": "gmail",
@@ -10,10 +10,10 @@
     },
     "devport" : 8080,
 	"S3" : {
-		"endpoint": "https://sfo2.digitaloceanspaces.com",
-		"keyid": "QN6MGBCYPSG6TS4S35EH",
-		"secret": "bldAJ0lGuOhI+skGzpfHL677hXiik+6wNj5ZNMu5UPY",
-		"bucket": "test-bucket-c4a"
+		"endpoint": "https://s3-ap-south-1.amazonaws.com/",
+		"keyid": "AKIAVBEA7SNBHZ2F36GB",
+		"secret": "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",
+		"bucket": "c4a-images"
 	},
 	"msgApiUrl": "https://api.textlocal.in/send",
 	"msgApiKey": "QRutnq60+HY-hqMTKCUoGCqWNAaetcyiGWF3KO6U3d",
