@@ -9,20 +9,7 @@ module.exports = function(req,res) {
 
 	routeStrings.forEach(element => {
 		let arr = element.split(',');
-		geoQueries.push({
-			$geoNear: {
-				spherical: true,
-				maxDistance: 400,
-				key: "pickup.coordinates",
-				near: {
-					type: "Point",
-					coordinates: [
-						parseFloat(arr[1]), parseFloat(arr[0])
-					]
-				},
-				distanceField: "pickupDistance"
-			}
-		})
+		geoQueries.push([parseFloat(arr[1]), parseFloat(arr[0])]);
 	})
 	geoQueries.pop(); // Remove last null element caused by extra '|'
 
@@ -33,22 +20,29 @@ module.exports = function(req,res) {
 			parseFloat(req.query.lat)
 		]
 	}
-
 		Query
-		.aggregate([
-			{
-				$geoNear: {
-					distanceField: "instDistance",
-					spherical: true,
-					maxDistance: 20000000,
-					near: destinationPoint,
-					key: "institution.coordinates"
-				}
-			}/*,
-			{
-				$or: geoQueries
-			}*/
-		])
+		.find({
+			$and: [
+				{
+					"institution.coordinates": {
+						$near: {
+							$maxDistance: 20000,
+							$geometry: destinationPoint
+						}
+					}
+				}/*,
+				{
+					"pickup.coordinates": {
+						$geoIntersects: {
+							$geometry: {
+								type: "MultiPoint",
+								coordinates: geoQueries
+							}
+						}
+					}
+				}*/
+			]
+		})
 		.exec(function(err, data) {
 			if(err)	{
 				console.log(err);
