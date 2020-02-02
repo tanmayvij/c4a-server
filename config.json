@@ -1,5 +1,5 @@
 {
-    "dburl" : "mongodb://tanmay:mongo@localhost/cab4all",
+    "dburl" : "mongodb+srv://tanmay:mongo@cluster0-bjv6l.mongodb.net/schoolcab?retryWrites=true&w=majority",
     "jwtkey" : "g66j19f8!zx",
     "nodemailer" : {
         "service": "gmail",

@@ -31,6 +31,18 @@ router.route('/addCar')
 router.route('/searchCabs')
 .get(driver.searchCabs);
 
+router.route('/searchOneTimeCabs')
+.get(driver.searchOneTimeCabs);
+
+router.route('/getChildCab')
+.get(driver.getChildCab);
+
+router.route('/startJourney')
+.get(driver.startJourney);
+
+router.route('/endJourney')
+.get(driver.endJourney);
+
 router.route('/configureRoute')
 .put(require('./auth/authenticate'), driver.configureRoute);
 

@@ -10,6 +10,10 @@ module.exports = {
     deleteRequest: require('./deleteRequest'),
     contactOnQuery: require('./contactOnQuery'),
     searchCabs: require('./searchCabs'),
-    configureRoute: require('./configureRoute')
+    configureRoute: require('./configureRoute'),
+	searchOneTimeCabs: require('./searchOneTimeCabs'),
+	getChildCab: require('./getChildCab'),
+	startJourney: require('./startJourney'),
+	endJourney: require('./endJourney')
     
 };
