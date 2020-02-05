@@ -38,10 +38,10 @@ router.route('/getChildCab')
 .get(driver.getChildCab);
 
 router.route('/startJourney')
-.get(driver.startJourney);
+.get(require('./auth/authenticate'), driver.startJourney);
 
 router.route('/endJourney')
-.get(driver.endJourney);
+.get(require('./auth/authenticate'), driver.endJourney);
 
 router.route('/configureRoute')
 .put(require('./auth/authenticate'), driver.configureRoute);
