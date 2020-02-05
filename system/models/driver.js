@@ -33,6 +33,9 @@ var carSchema = new mongoose.Schema({
 	},
 	startTime: {
 		type: String
+	},
+	status: {
+		type: Number
 	}
 });
 
