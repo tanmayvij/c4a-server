@@ -1,17 +1,21 @@
 var mongoose = require('mongoose');
 var Query = mongoose.model("Query");
+var geolib = require("geolib")
 
 module.exports = function(req,res) {
 
 	var routeStrings = req.query.route.split('|');
 
-	var geoQueries = [];
+	var waypointArr = [];
 
 	routeStrings.forEach(element => {
 		let arr = element.split(',');
-		geoQueries.push([parseFloat(arr[1]), parseFloat(arr[0])]);
+		waypointArr.push({
+			latitude: parseFloat(arr[0]),
+			longitude: parseFloat(arr[1])
+		});
 	})
-	geoQueries.pop(); // Remove last null element caused by extra '|'
+	waypointArr.pop(); // Remove last null element caused by extra '|'
 
 	var destinationPoint = {
 		type: "Point",
@@ -21,28 +25,16 @@ module.exports = function(req,res) {
 		]
 	}
 		Query
-		.find({
-			$and: [
+		.aggregate([{
+			$geoNear:
 				{
-					"institution.coordinates": {
-						$near: {
-							$maxDistance: 20000,
-							$geometry: destinationPoint
-						}
-					}
-				}/*,
-				{
-					"pickup.coordinates": {
-						$geoIntersects: {
-							$geometry: {
-								type: "MultiPoint",
-								coordinates: geoQueries
-							}
-						}
-					}
-				}*/
-			]
-		})
+					maxDistance: 20000,
+					near: destinationPoint,
+					spherical: true,
+					distanceField: 'instDistance',
+					key: "institution.coordinates"
+				}
+		}])
 		.exec(function(err, data) {
 			if(err)	{
 				console.log(err);
@@ -50,7 +42,26 @@ module.exports = function(req,res) {
 			}
 			else {
 				console.log("GET Parent Queries data");
-				res.status(200).json(data);
+				var finalData = [];
+				if(data)
+				{
+					data.forEach(element => {
+						var pickupPoint = {
+							latitude: element.pickup.coordinates[1],
+							longitude: element.pickup.coordinates[0]
+						};
+						var nearest = geolib.findNearest(
+							pickupPoint,
+							waypointArr
+						);
+						element.pickupDist = geolib.getDistance(nearest, pickupPoint);
+						if(element.pickupDist <= 5000) {
+							finalData.push(element)
+						}
+					})
+				}
+
+				res.status(200).json(finalData);
 			}
 		});
 	

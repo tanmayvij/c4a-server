@@ -1,85 +1,73 @@
 var mongoose = require('mongoose');
 var Driver = mongoose.model("Driver");
+var geolib = require('geolib');
+const AWS = require('aws-sdk');
+const config = require('../../config.json').S3;
+
+const endpoint = new AWS.Endpoint(config.endpoint);
+
+const s3Client = new AWS.S3({
+    accessKeyId: config.keyid,
+    secretAccessKey: config.secret,
+	endpoint: endpoint
+});
 
 module.exports = function(req, res) {
 
 
 	var pickupPoint = {
-		type: "Point",
-		coordinates: [
-			req.query.pickupLng,
-			req.query.pickupLat
-		]
+		latitude: parseFloat(req.query.pickupLat),
+		longitude: parseFloat(req.query.pickupLng)
 	};
 
 	var dropPoint = {
-		type: "Point",
-		coordinates: [
-			req.query.dropLng,
-			req.query.dropLat
-		]
+		latitude: parseFloat(req.query.dropLat),
+		longitude: parseFloat(req.query.dropLng)
 	};
 
 	Driver
-	/*.aggregate([
-		{
-			$geoNear: {
-				maxDistance: 500,
-				spherical: true,
-				distanceField: "distance",
-				near: dropPoint
-			}
-		}
-	])*/
 	.find({})
 	.exec(function(err, response) {
 		if(err) {
 			res.status(500).json({"error": "Something went wrong. Please try again later."});
 		}
 		else {
-/*
-			var temp = response;
-			temp.noOfChildren = temp.car.route.length - 2;
-			temp.startTime = temp.car.startTime;
-			temp.coordinates = {};
-			temp.routeCoordinates = [];
+			var finalData = [], nearest = {}, route = [], newDriver = {};
+			response.forEach(driver => {
+				driver.car.forEach(car => {
+					if(car.route.length > 0 && car.status)
+					{
+						route = [];
+						car.route.forEach(waypoint => {
+							route.push({
+								latitude: waypoint.coordinates[1],
+								longitude: waypoint.coordinates[0]
+							})
+						});
+						nearest = geolib.findNearest(pickupPoint, route);
+						car.distanceFromPickup = geolib.getDistance(pickupPoint, nearest);
+						car.distanceFromDrop = geolib.getDistance(dropPoint, route[route.length - 1]);
 
-			temp.car.route.forEach(element => {
-				temp.routeCoordinates.push({
-					latitude: element.coordinates[1],
-					longitude: element.coordinates[0]
-				})
+						if(car.distanceFromPickup <= 50000 && car.distanceFromDrop <= 20000) {
+							newDriver = {
+								userid: driver.userid,
+								name: driver.name,
+								phone: driver.phone,
+								distance: car.distanceFromPickup,
+								noOfChildren: car.route.length - 2,
+								startTime: car.startTime,
+								car: car,
+								coordinates: nearest,
+								routeCoordinates: route,
+								imageKey: driver.imageUri.split('/').pop(),
+								driverImage: ''
+							};
+							finalData.push(newDriver);
+						}
+					}
+				});
 			});
-*/
-			res.status(200).json( /* temp */
-			[
-				{
-					userid: "tanmayvij",
-					name: "ABC XYZ",
-					phone: "+11234567890",
-					distance: 100,
-					noOfChildren: 10,
-					startTime: "ABC",
-					car: {
-						_id: "axcbv",
-						make: "Hyundai",
-						model: "i20",
-						color: "Black",
-						regno: "DL 1C 10 2626"
-					},
-					coordinates: {
-						latitude: 28.540,
-						longitude: 77.099
-					},
-					routeCoordinates: [
-						{latitude: 28, longitude: 77},
-						{latitude: 28.001, longitude: 77.005},
-						{latitude: 28.006, longitude: 77.010}
-					],
-					driverImage: "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-				}
-			]
-			)
+			res.status(200).json(finalData);
 		}
 	});
 

@@ -1,8 +1,6 @@
-var stream = require('stream');
 const AWS = require('aws-sdk');
 const multer = require('multer');
 const config = require('../config.json').S3;
-const fs = require('fs');
 
 const endpoint = new AWS.Endpoint(config.endpoint);
 
