@@ -17,7 +17,7 @@ var childSchema = new mongoose.Schema({
 		  index : '2dsphere'
 		}
     },
-	carId : {
+	cabId : {
 		type: String
 	}
 });

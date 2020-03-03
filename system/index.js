@@ -14,7 +14,7 @@ router.route('/getRequests/:carId')
 .get(require('./auth/authenticate'), driver.getRequests);
 
 router.route('/acceptRequest/:id')
-.get(require('./auth/authenticate'), driver.acceptRequest, driver.updateRoute, driver.deleteRequest);
+.get(require('./auth/authenticate'), driver.acceptRequest, driver.updateRoute, parent.updateChildCab, driver.deleteRequest);
 
 router.route('/deleteRequest/:id')
 .delete(require('./auth/authenticate'), driver.deleteRequest);

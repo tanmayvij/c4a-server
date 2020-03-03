@@ -52,6 +52,8 @@ module.exports = function(req,res,next) {
 			req.id = data.driver.userid;
 			req.carId = data.carId;
 			req.RequestId = data._id;
+			req.child = data.childName;
+			req.parentId = data.parentUserId;
 			var message = `
 			Dear ${data.parent.name}, Your Cab4All request for ${data.childName} has been accepted by ${data.driver.name}. You can now contact the driver on ${data.driver.phone}. Thank you for using Cab4All.`;
 			var params = {
