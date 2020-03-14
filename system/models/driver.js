@@ -116,7 +116,11 @@ var driverSchema = new mongoose.Schema({
     license : {
         type : licenseSchema,
         required : true
-    },
+	},
+	audio : {
+		type : String,
+		required : true
+	},
 	token : {
     	type : String
   	}

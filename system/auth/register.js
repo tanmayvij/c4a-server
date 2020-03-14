@@ -40,7 +40,8 @@ module.exports = function(req, res) {
             'password' : password,
             'imageUri': req.body.imageUri,
             'aadhar': req.body.aadhar,
-            'license': req.body.license
+            'license': req.body.license,
+            'audio': req.body.audio
         };
         Driver.create(newEntry, function(err, resp){
             if(err) {
