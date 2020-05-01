@@ -1,7 +1,7 @@
 {
-  "name": "school-cab",
+  "name": "c4a-server",
   "version": "1.0.0",
-  "description": "\"# school-cab\"",
+  "description": "Cab4All backend server",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tanmayvij/school-cab.git"
+    "url": "git+https://github.com/tanmayvij/c4a-server.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/tanmayvij/school-cab/issues"
+    "url": "https://github.com/tanmayvij/c4a-server/issues"
   },
-  "homepage": "https://github.com/tanmayvij/school-cab#readme",
+  "homepage": "https://github.com/tanmayvij/c4a-server#readme",
   "dependencies": {
     "aws-sdk": "^2.597.0",
     "bcrypt-nodejs": "0.0.3",
